@@ -12,6 +12,7 @@ public class Address {
     private String street;
     private String zipcode;
 
+    // protected 로 가능
     protected Address () {
 
     }
