@@ -17,20 +17,38 @@ public class Order {
     @Column(name = "orders_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // cascade 는 order 가 save 될떄 Delivery 도 같이 save 되는 옵션
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
 
-    private LocalDateTime orderDate;
+    private LocalDateTime orderDate; // 주문시간
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status; // 주문상태
+
+    //==연관관계 메서드==
+    public void setMember(Member member){
+        this.member = member;
+        member.getOrders().add(this);
+    }
+
+    public void addOrderItem(OrderItem orderItem){
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
+    public void setDelivery( Delivery delivery){
+        this.delivery = delivery;
+        delivery.setOrder(this);
+    }
+
+
 }
